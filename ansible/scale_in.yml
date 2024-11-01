@@ -1,0 +1,38 @@
+- name: "Scale down to 3 nodes"
+  hosts: scale
+  become: True
+  tasks:
+    - name: "Decommission nodes"
+      ansible.builtin.shell:
+        cmd: nodetool decommission
+      ignore_errors: true
+
+    - name: "Stop ScyllaDB"
+      ansible.builtin.systemd_service:
+        name: scylla-server.service
+        state: stopped
+
+    - name: Wipe data-dir
+      ansible.builtin.shell:
+        cmd: 'rm -fr /var/lib/scylla/data/* ;  find /var/lib/scylla -type f -delete'
+
+- name: "Update Monitoring"
+  hosts: monitoring
+  become: True
+  tasks:
+    - name: "Update Prometheus targets"
+      ansible.builtin.copy:
+        dest: /root/scylla-monitoring-4.8.1/prometheus/scylla_servers.yml
+        src: /root/scylla-monitoring-4.8.1/prometheus/scylla_servers_base.yml
+        remote_src: True
+        mode: preserve
+    - name: "Reload Prometheus config"
+      ansible.builtin.uri:
+        remote_src: True
+        url: http://localhost:9090/-/reload
+        method: POST
+    - name: "Restart aprom container"
+      community.docker.docker_container:
+        name: aprom
+        state: started
+        restart: true

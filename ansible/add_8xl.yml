@@ -1,0 +1,39 @@
+- name: "Scale out to +3 nodes"
+  hosts: scale
+  become: True
+  tasks:
+    - name: "Start ScyllaDB"
+      ansible.builtin.systemd_service:
+        name: scylla-server.service
+        state: started
+
+    - name: Waiting for CQL port readiness
+      wait_for:
+        port: 9042
+        host: 127.0.0.1
+        connect_timeout: 3
+        delay: 3
+        sleep: 10
+        timeout: 1200
+        state: present
+
+- name: "Update Monitoring"
+  hosts: monitoring
+  become: True
+  tasks:
+    - name: "Update Prometheus targets"
+      ansible.builtin.copy:
+        dest: /root/scylla-monitoring-4.8.1/prometheus/scylla_servers.yml
+        src: /root/scylla-monitoring-4.8.1/prometheus/scylla_servers_scale.yml
+        remote_src: True
+        mode: preserve
+    - name: "Reload Prometheus config"
+      ansible.builtin.uri:
+        remote_src: True
+        url: http://localhost:9090/-/reload
+        method: POST
+    - name: "Restart aprom container"
+      community.docker.docker_container:
+        name: aprom
+        state: started
+        restart: true
