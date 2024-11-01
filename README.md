@@ -120,7 +120,7 @@ If this is your first time ingesting data, then be minded that starting the init
 
 Once you are happy with the results, proceed with next steps (scaling out, then scaling traffic, playing with batches, nodetool/cqlsh tabs, and then scaling-in). 
 
-If you set-up things correctly, then you should be able to scale-out and scale-in without any intervention.
+If you set-up things correctly, then you should be able to scale-out and scale-in without any intervention. Simply connect on port `5000` and enjoy!
 
 ## Known issues
 
@@ -134,3 +134,4 @@ If you set-up things correctly, then you should be able to scale-out and scale-i
 - This work doesn't aim to auto-provision VMs. Just terraform it, don't try to reinvent the wheel.
 - Yes, all ScyllaDB nodes must be up and running. If this bothers you, fix it. Or even better: Switch to K8s Operator.
 - The code makes no attempt to troubleshoot things for you. Get familiar with it, and adapt as you need.
+- Cloud automation (peering, SGs, etc) are not covered.
