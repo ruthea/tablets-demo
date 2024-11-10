@@ -17,23 +17,23 @@
         timeout: 1200
         state: present
 
-- name: "Update Monitoring"
-  hosts: monitoring
-  become: True
-  tasks:
-    - name: "Update Prometheus targets"
-      ansible.builtin.copy:
-        dest: /root/scylla-monitoring-4.8.1/prometheus/scylla_servers.yml
-        src: /root/scylla-monitoring-4.8.1/prometheus/scylla_servers_scale.yml
-        remote_src: True
-        mode: preserve
-    - name: "Reload Prometheus config"
-      ansible.builtin.uri:
-        remote_src: True
-        url: http://localhost:9090/-/reload
-        method: POST
-    - name: "Restart aprom container"
-      community.docker.docker_container:
-        name: aprom
-        state: started
-        restart: true
+# - name: "Update Monitoring"
+#  hosts: monitoring
+#  become: True
+#  tasks:
+#    - name: "Update Prometheus targets"
+#      ansible.builtin.copy:
+#        dest: /root/scylla-monitoring-4.8.1/prometheus/scylla_servers.yml
+#        src: /root/scylla-monitoring-4.8.1/prometheus/scylla_servers_scale.yml
+#        remote_src: True
+#        mode: preserve
+#    - name: "Reload Prometheus config"
+#      ansible.builtin.uri:
+#        remote_src: True
+#        url: http://localhost:9090/-/reload
+#        method: POST
+#    - name: "Restart aprom container"
+#      community.docker.docker_container:
+#        name: aprom
+#        state: started
+#        restart: true
