@@ -114,7 +114,7 @@ Environment=PATH=/home/ubuntu/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbi
 Type=simple
 User=ubuntu
 WorkingDirectory=/app/tablets-demo
-ExecStart=/home/ubuntu/.local/bin/wait-for-it --service 172.31.0.103:9042 -t 0 -- /usr/bin/python3 app.py --seed-node ${SEED_IP} --monitoring-ip ${PUBLIC_IP} -i
+ExecStart=/home/ubuntu/.local/bin/wait-for-it --service 172.31.0.103:9042 --service 172.31.0.102:9042 --service 172.31.0.101:9042 -t 0 -- /usr/bin/python3 app.py --seed-node ${SEED_IP} --monitoring-ip ${PUBLIC_IP} -i
 Restart=never
 LimitNOFILE=50000
 
@@ -127,6 +127,9 @@ systemctl daemon-reload
 # Note, there's a race condition here:
 # If the Terraform provisioner hasn't yet copied the private key to this (201) node, the initial ingestion will fail.
 # This shouldn't be the case most of the time as the setup takes some considerable time already. BUT, be aware of it.
+# And sleep just in case :-)
+
+sleep 120
 systemctl start webapp
 
 fi
