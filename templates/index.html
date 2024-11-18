@@ -126,18 +126,15 @@
         document.getElementById("oneMillionBtn").addEventListener("click", function() {
           socket.emit("1m_loader");
         });
-	
-        document.getElementById("batchLoadBtn").addEventListener("click", function() {
-          socket.emit("batch_loader");
-        });
-
-        // New buttons for kill node and restart node
-        document.getElementById("killNodeBtn").addEventListener("click", function() {
+	document.getElementById("killNodeBtn").addEventListener("click", function() {
           socket.emit("kill_node_playbook");
         });
-
         document.getElementById("restartNodeBtn").addEventListener("click", function() {
           socket.emit("restart_node_playbook");
+        });
+	
+	document.getElementById("batchLoadBtn").addEventListener("click", function() {
+	  socket.emit("batch_loader");
         });
 
         socket.on("playbook_output", function(data) {
@@ -174,7 +171,7 @@
           }
         });
 
-        // Listen for cqlsh command output
+        // Listen for shell command output
         socket.on("cqlsh_output", function(data) {
            console.log("Received cqlsh output:", data); // Debug: Log received data
            var cqlshOutputElem = document.getElementById("cqlsh-output");
@@ -208,21 +205,21 @@
       </div>
       <!-- Playbook Tab -->
       <div class="tab-content active">
-        <h1>Click the button to run Ansible Playbook</h1>
-        <div class="buttons">
-          <button id="testBtn">Ping!</button>
-          <button id="stopLoaderBtn">Stop Loader</button>
-          <button id="loaderBtn">500K/s</button>
-          <button id="oneMillionBtn">1M ops/s</button>
-          <button id="scaleBtn">Scale Out</button>
-          <button id="downScaleBtn">Scale In</button>
-          <button id="batchLoadBtn">Batch Workload</button>
-          <!-- New buttons for Kill and Restart Node -->
-          <button id="killNodeBtn">Kill Node</button>
-          <button id="restartNodeBtn">Restart Node</button>
-        </div>
-        <p>Playbook Output:</p>
-        <pre id="output"></pre>
+      <h1>Click the button to run Ansible Playbook</h1>
+      <div class="buttons">
+        <button id="testBtn">Ping!</button>
+	<button id="stopLoaderBtn">Stop Loader</button>
+	<button id="loaderBtn">500K/s</button>
+	<button id="oneMillionBtn">1M ops/s</button>
+        <button id="scaleBtn">Scale Out</button>
+	<button id="downScaleBtn">Scale In</button>
+	<button id="batchLoadBtn">Batch Workload</button>
+	<!-- New buttons for Kill and Restart Node -->
+	<button id="killNodeBtn">Kill Node</button>
+	<button id="restartNodeBtn">Restart Node</button>
+      </div>
+      <p>Playbook Output:</p>
+      <pre id="output"></pre>
       </div>
 
       <!-- Shell Tab -->
@@ -245,4 +242,24 @@
         <button class="tab-button">Detailed</button>
         <button class="tab-button">Advanced</button>
         <button class="tab-button">CQL</button>
-        <button class="tab-button">OS Metrics</button
+        <button class="tab-button">OS Metrics</button>
+      </div>
+
+      <div class="tab-content active">
+      <iframe src="http://{{ monitoring_ip }}:3000/d/overview-2024-2/overview?from=now-5m&to=now&var-by=instance&var-cluster=cluster&var-dc=All&var-node=All&var-shard=All&var-mount_point=%2Fvar%2Flib%2Fscylla&var-sg=sl:default&var-func=sum&var-dash_version=2024-2&var-all_scyllas_versions=All&var-count_dc=All&var-scylla_version=2024.2&var-monitoring_version=4.8.1&orgId=1&refresh=5s&var-kind=All&var-topk=256&var-bottomk=0&theme=dark&var-sg=sl:realtime&var-sg=sl:wlp" width="100%" height="1600px" frameborder="0"></iframe>
+      </div>
+      <div class="tab-content">
+        <iframe src="http://{{ monitoring_ip }}:3000/d/detailed-2024-2/detailed?from=now-5m&to=now&var-by=instance&var-cluster=cluster&var-dc=All&var-node=All&var-shard=All&var-topk=256&var-bottomk=0&var-dash_version=2024-2&var-scylla_version=2024.2&var-monitoring_version=4.8.1&orgId=1&refresh=5s&var-sg=sl:realtime&var-sg=sl:wlp&var-kind=All&var-func=sum&theme=dark" width="100%" height="1600px" frameborder="0"></iframe>
+      </div>
+      <div class="tab-content">
+        <iframe src="http://{{ monitoring_ip }}:3000/d/advanced-2024-2/advanced?from=now-5m&to=now&var-by=instance&var-cluster=cluster&var-dc=All&var-node=All&var-shard=All&var-mount_point=%2Fvar%2Flib%2Fscylla&var-sg=sl:default&var-func=sum&var-dash_version=2024-2&var-all_scyllas_versions=All&var-count_dc=All&var-scylla_version=2024.2&var-monitoring_version=4.8.1&orgId=1&refresh=5s&var-kind=All&var-topk=256&var-bottomk=0&theme=dark" width="100%" height="1600px" frameborder="0"></iframe>
+      </div>
+      <div class="tab-content">
+	<iframe src="http://{{ monitoring_ip }}:3000/d/cql-2024-2/scylla-cql?from=now-5m&to=now&var-by=instance&var-cluster=cluster&var-dc=All&var-node=All&var-shard=All&var-mount_point=%2Fvar%2Flib%2Fscylla&var-sg=sl:realtime&var-sg=sl:wlp&var-func=sum&var-dash_version=2024-2&var-all_scyllas_versions=All&var-count_dc=All&var-scylla_version=2024.2&var-monitoring_version=4.8.1&orgId=1&refresh=5s&var-kind=All&var-topk=256&var-bottomk=0&theme=dark" width="100%" height="1600px" frameborder="0"></iframe>
+      </div>
+      <div class="tab-content">
+        <iframe src="http://{{ monitoring_ip }}:3000/d/OS-2024-2/os-metrics?from=now-5m&to=now&var-by=instance&var-cluster=cluster&var-dc=All&var-node=All&var-shard=All&var-topk=256&var-bottomk=0&var-dash_version=2024-2&var-scylla_version=2024.2&var-monitoring_version=4.8.1&orgId=1&refresh=30s&theme=dark" width="100%" height="1600px" frameborder="0"></iframe>
+      </div>
+    </div>
+  </body>
+</html>
