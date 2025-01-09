@@ -3,6 +3,10 @@
   hosts: 172.31.0.102
   become: yes  # Run with sudo privileges
   tasks:
+    - name: Stop the scylla-server.service
+      ansible.builtin.systemd:
+        name: scylla-server.service
+        state: stopped
     - name: Start the scylla-server.service
       ansible.builtin.systemd:
         name: scylla-server.service
