@@ -127,15 +127,18 @@
           socket.emit("1m_loader");
         });
 	
-	document.getElementById("batchLoadBtn").addEventListener("click", function() {
-	  socket.emit("batch_loader");
-        });
-	document.getElementById("killNodeBtn").addEventListener("click", function() {
-	  socket.emit("kill_node_playbook");
-        });
-	document.getElementById("restartNodeBtn").addEventListener("click", function() {
-	  socket.emit("restart_node_playbook");
-        });
+        document.getElementById("batchLoadBtn").addEventListener("click", function() {
+          socket.emit("batch_loader");
+              });
+        document.getElementById("killNodeBtn").addEventListener("click", function() {
+          socket.emit("kill_node_playbook");
+              });
+        document.getElementById("replacenodeBtn").addEventListener("click", function() {
+          socket.emit("replace_node_playbook");
+              });
+        document.getElementById("restartNodeBtn").addEventListener("click", function() {
+          socket.emit("restart_node");
+              });
 
         socket.on("playbook_output", function(data) {
           var outputElem = document.getElementById("output");
@@ -208,12 +211,13 @@
       <h1>Click the button to run Ansible Playbook</h1>
       <div class="buttons">
         <button id="testBtn">Ping!</button>
-	<button id="stopLoaderBtn">Stop Loader</button>
-	<button id="loaderBtn">500K/s</button>
-	<button id="oneMillionBtn">1M ops/s</button>
+        <button id="stopLoaderBtn">Stop Loader</button>
+        <button id="loaderBtn">500K/s</button>
+        <button id="oneMillionBtn">1M ops/s</button>
         <button id="scaleBtn">Scale Out</button>
-	<button id="downScaleBtn">Scale In</button>
-	<button id="batchLoadBtn">Batch Workload</button>
+        <button id="downScaleBtn">Scale In</button>
+        <button id="batchLoadBtn">Batch Workload</button>
+        <button id="replacenodeBtn">Replace Node</button>
         <button id="killNodeBtn">Kill Node</button>
         <button id="restartNodeBtn">Restart Node</button>
       </div>
