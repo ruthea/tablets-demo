@@ -1,4 +1,4 @@
-- name: "Scale down to 3 nodes"
+- name: "Replace Node"
   hosts: 172.31.0.102
   become: True
   tasks:
