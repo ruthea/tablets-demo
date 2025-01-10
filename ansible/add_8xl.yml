@@ -1,5 +1,5 @@
 - name: "Scale out to +3 nodes"
-  hosts: scale
+  hosts: scale1
   become: True
   tasks:
     - name: "Start ScyllaDB"
