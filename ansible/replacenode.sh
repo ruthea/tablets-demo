@@ -20,7 +20,7 @@ if [[ -z "$RESULT" ]]; then
 fi
 
 # Use the RESULT variable in the next step
-echo "The host_id is: $RESULT" >> /tmp/hostuuid
+sudo echo "The host_id is: $RESULT" >> /tmp/hostuuid
 
 sudo systemctl stop scylla-server.service
 
@@ -35,7 +35,7 @@ SCYLLA_YAML="/etc/scylla/scylla.yaml"
 
 # Backup the original configuration file
 if [[ ! -f "${SCYLLA_YAML}.bak" ]]; then
-  cp "$SCYLLA_YAML" "${SCYLLA_YAML}.bak"
+  sudo cp "$SCYLLA_YAML" "${SCYLLA_YAML}.bak"
   echo "Backup of scylla.yaml created at ${SCYLLA_YAML}.bak"
 fi
 
