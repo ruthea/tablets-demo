@@ -82,7 +82,8 @@ EOF
 
 # Workaround a bug in Ec2 when disks are provisioned in the wrong order lol
 
-DISKS=$(lsblk | grep -E '3\.4T|2\.3T|7\.2T|7\.3T|7\.4T|2\.5T' | awk '{ print "/dev/" $1 }' | paste -sd, -)
+DISKS=$(lsblk | grep -E '3\.4T|2\.3T|6.8T' | awk '{ print "/dev/" $1 }' | paste -sd, -)
+
 
 # Extract the primary NIC name from `ip addr`
 primary_nic=$(ip addr | awk '/state UP/{print $2}' | sed 's/://')
