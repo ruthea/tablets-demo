@@ -82,6 +82,8 @@ EOF
 
 # Workaround a bug in Ec2 when disks are provisioned in the wrong order lol
 
+DISKS=$(for i in $(lsblk | grep '3.4T' | awk '{ print $1 }'); do echo -ne "/dev/${i},"; done | sed 's/,$//g')
+
 if [ -z "$DISKS" ]; then
     # DISKS is empty, try the second command
     DISKS=$(for i in $(lsblk | grep '2.3T' | awk '{ print $1 }'); do echo -ne "/dev/${i},"; done | sed 's/,$//g')
