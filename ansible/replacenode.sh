@@ -19,7 +19,7 @@ if [[ -z "$RESULT" ]]; then
 fi
 
 # Use the RESULT variable in the next step
-echo "The host_id is: $RESULT"
+echo "The host_id is: $RESULT" >> /tmp/hostuuid
 
 sudo systemctl stop scylla-server.service
 
