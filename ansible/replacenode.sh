@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# Cleanup commands for ScyllaDB data directories
-sudo rm -rf /var/lib/scylla/data
-sudo find /var/lib/scylla/commitlog -type f -delete
-sudo find /var/lib/scylla/hints -type f -delete
-sudo find /var/lib/scylla/view_hints -type f -delete
+
 
 # Credentials for ScyllaDB
 SCYLLA_USER="cassandra"
@@ -25,6 +21,14 @@ fi
 # Use the RESULT variable in the next step
 echo "The host_id is: $RESULT"
 
+sudo systemctl stop scylla-server.service
+
+# Cleanup commands for ScyllaDB data directories
+sudo rm -rf /var/lib/scylla/data
+sudo find /var/lib/scylla/commitlog -type f -delete
+sudo find /var/lib/scylla/hints -type f -delete
+sudo find /var/lib/scylla/view_hints -type f -delete
+
 # Append the parameter to the ScyllaDB YAML configuration file
 SCYLLA_YAML="/etc/scylla/scylla.yaml"
 
@@ -35,7 +39,7 @@ if [[ ! -f "${SCYLLA_YAML}.bak" ]]; then
 fi
 
 # Add the parameter to the end of the configuration file
-echo "replace_node_first_boot: $RESULT" >> "$SCYLLA_YAML"
+sudo echo "replace_node_first_boot: $RESULT" >> "$SCYLLA_YAML"
 
 # Confirm the addition
 if grep -q "replace_node_first_boot: $RESULT" "$SCYLLA_YAML"; then
