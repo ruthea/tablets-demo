@@ -152,6 +152,17 @@ def handle_1m_loader():
     process.stdout.close()
     process.wait()
 
+@socketio.on("replace_node_playbook")
+def handle_kill_node():
+    playbook_cmd = ["ansible-playbook", f"{playbook_path}/replace_node.yml"]
+    process = subprocess.Popen(playbook_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, cwd=playbook_path)
+
+    for line in process.stdout:
+        socketio.emit("playbook_output", {"output": line})
+        socketio.sleep(0)
+
+    process.wait()
+
 @socketio.on("kill_node_playbook")
 def handle_kill_node():
     playbook_cmd = ["ansible-playbook", f"{playbook_path}/kill_node.yml"]
