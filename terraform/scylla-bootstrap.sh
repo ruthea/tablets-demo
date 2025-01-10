@@ -84,8 +84,12 @@ EOF
 
 DISKS=$(for i in $(lsblk | grep '3.4T' | awk '{ print $1 }'); do echo -ne "/dev/${i},"; done | sed 's/,$//g')
 
+# Extract the primary NIC name from `ip addr`
+primary_nic=$(ip addr | awk '/state UP/{print $2}' | sed 's/://')
+
+
 scylla_setup --disks ${DISKS} --online-discard 1 \
-   --nic ens5 --io-setup 1 --no-version-check \
+   --nic ${primary_nic} --io-setup 1 --no-version-check \
    --no-fstrim-setup --no-rsyslog-setup
 
 # Better be safe, than sorry later.
