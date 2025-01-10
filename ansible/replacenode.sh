@@ -10,7 +10,8 @@ SCYLLA_PASSWORD="cassandra"
 QUERY="SELECT host_id FROM system.local;"
 
 # Run the query using cqlsh and capture the result
-RESULT=$(echo "$QUERY" | cqlsh -u "$SCYLLA_USER" -p "$SCYLLA_PASSWORD" --no-color | grep -oP '(?<=\| )[0-9a-fA-F-]+(?= \|)')
+RESULT=$(echo "$QUERY" | cqlsh -u cassandra -p cassandra --no-color | grep -oP '^[[:space:]]*[0-9a-fA-F-]{36}[[:space:]]*$')
+##echo "select host_id from system.local;" | cqlsh -u cassandra -p cassandra --no-color | grep -oP '^[[:space:]]*[0-9a-fA-F-]{36}[[:space:]]*$'
 
 # Check if RESULT is not empty
 if [[ -z "$RESULT" ]]; then
