@@ -13,13 +13,13 @@ INSTANCE_IP="$(hostname -I)"
 IP_BLOCK=$(echo ${INSTANCE_IP} | awk -F'.' '{ print $NF }')
 
 case ${IP_BLOCK} in
-   "101"|"104")
+   "101"|"104"|"107")
      rack="rack1"
      ;;
-   "102"|"105")
+   "102"|"105"|"108")
      rack="rack2"
      ;;
-   "103"|"106")
+   "103"|"106"|"109")
      rack="rack3"
      ;;
    *) ;;
@@ -95,7 +95,7 @@ scylla_setup --disks ${DISKS} --online-discard 1 \
 # Better be safe, than sorry later.
 
 sed -i 's/^SET_NIC_AND_DISKS.*$/SET_NIC_AND_DISKS=yes/g' /etc/default/scylla-server
-scylla_sysconfig_setup --nic ens5 --setup-nic-and-disks
+scylla_sysconfig_setup --nic ${primary_nic} --setup-nic-and-disks
 
 # Wait for seed node availability (unless we are the seed), and start ScyllaDB
 # if (and only if) we are either the 2nd or 3rd node.
