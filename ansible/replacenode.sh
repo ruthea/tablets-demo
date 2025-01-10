@@ -40,7 +40,15 @@ if [[ ! -f "${SCYLLA_YAML}.bak" ]]; then
 fi
 
 # Add the parameter to the end of the configuration file
-sudo echo "replace_node_first_boot: $RESULT" >> "$SCYLLA_YAML"
+# sudo echo "replace_node_first_boot: $RESULT" >> "$SCYLLA_YAML"
+
+# Replace the parameter if it exists, or add it if it doesn't
+if grep -q "^replace_node_first_boot:" "$SCYLLA_YAML"; then
+  sudo sed -i "s|^replace_node_first_boot:.*|replace_node_first_boot: $RESULT|" "$SCYLLA_YAML"
+else
+  echo "replace_node_first_boot: $RESULT" | sudo tee -a "$SCYLLA_YAML"
+fi
+
 
 # Confirm the addition
 if grep -q "replace_node_first_boot: $RESULT" "$SCYLLA_YAML"; then
