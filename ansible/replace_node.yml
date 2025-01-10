@@ -1,13 +1,39 @@
+---
 - name: "Replace Node"
   hosts: 172.31.0.102
-  become: True
+  become: yes 
   tasks:
+    - name: Copy the bash script to the remote hosts
+      ansible.builtin.copy:
+        src: ./replacenode.sh
+        dest: /tmp/replacenode.sh
+        mode: '0755'
 
-    - name: "Stop ScyllaDB"
-      ansible.builtin.systemd_service:
+    - name: Execute the bash script on the remote hosts
+      ansible.builtin.shell: /tmp/replacenode.sh
+      args:
+        chdir: /tmp  # Change to the directory before executing the script
+      register: script_output
+
+    - name: Print the output of the bash script
+      ansible.builtin.debug:
+        var: script_output.stdout
+
+    - name: Start the scylla-server.service
+      ansible.builtin.systemd:
         name: scylla-server.service
-        state: stopped
+        state: started
 
-    - name: Wipe data-dir
-      ansible.builtin.shell:
-        cmd: 'rm -fr /var/lib/scylla/data/* ;  find /var/lib/scylla -type f -delete'
+# - name: "Replace Node"
+#   hosts: 172.31.0.102
+#   become: True
+#   tasks:
+
+#     - name: "Stop ScyllaDB"
+#       ansible.builtin.systemd_service:
+#         name: scylla-server.service
+#         state: stopped
+
+#     - name: Wipe data-dir
+#       ansible.builtin.shell:
+#         cmd: 'rm -fr /var/lib/scylla/data/* ;  find /var/lib/scylla -type f -delete'
