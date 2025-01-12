@@ -92,6 +92,31 @@ def handle_run_command():
     for remaining_output in process.stdout:
         socketio.emit("playbook_output", {"output": remaining_output}, callback=True)
 
+@socketio.on("scale2_playbook")
+def handle_run_command():
+    env = os.environ.copy()
+    playbook_cmd = ["ansible-playbook", playbook_path + "/scale2.yml"]
+    # Run the playbook using subprocess and stream output
+    process = subprocess.Popen(playbook_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, cwd=playbook_path, env=env)
+
+    while True: 
+        output = process.stdout.readline()
+
+        if output:
+            if output.strip():
+                socketio.emit("playbook_output", {"output": output}, callback=True)
+        else:
+            if process.poll() is not None:
+                print("BREAKING")
+                break
+
+        socketio.sleep(0)
+    
+    process.wait()
+    for remaining_output in process.stdout:
+        socketio.emit("playbook_output", {"output": remaining_output}, callback=True)
+
+
 @socketio.on("downscale_playbook")
 def handle_down_command():
     playbook_cmd = ["ansible-playbook", playbook_path + "/scale_in.yml"]
