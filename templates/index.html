@@ -125,7 +125,9 @@
         document.getElementById("scaleBtn").addEventListener("click", function() {
           socket.emit("scale_playbook");
         });
-
+        document.getElementById("scale2Btn").addEventListener("click", function() {
+          socket.emit("scale2_playbook");
+        });
         document.getElementById("downScaleBtn").addEventListener("click", function() {
           socket.emit("downscale_playbook");
         });
@@ -230,6 +232,7 @@
         <button id="loaderBtn">500K/s</button>
         <button id="oneMillionBtn">1M ops/s</button>
         <button id="scaleBtn">Scale Out</button>
+        <button id="scale2Btn">Scale 2 Out</button>
         <button id="downScaleBtn">Scale In</button>
         <button id="batchLoadBtn">Batch Workload</button>
         <button id="replacenodeBtn">Replace Node</button>
