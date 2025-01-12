@@ -1,4 +1,7 @@
+/*
 CREATE KEYSPACE IF NOT EXISTS keyspace1 WITH replication = {'class': 'org.apache.cassandra.locator.NetworkTopologyStrategy', 'datacenter1': '3'} AND durable_writes = true AND tablets = {'initial': 6000};
+*/
+CREATE KEYSPACE IF NOT EXISTS keyspace1 WITH replication = {'class': 'org.apache.cassandra.locator.NetworkTopologyStrategy', 'datacenter1': '3'} AND durable_writes = true;
 
 CREATE TABLE IF NOT EXISTS keyspace1.standard1 (
     key blob,
