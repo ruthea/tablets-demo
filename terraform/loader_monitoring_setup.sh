@@ -64,6 +64,9 @@ cat > prometheus/scylla_servers.yml << EOF
        - 172.31.0.104
        - 172.31.0.105
        - 172.31.0.106
+       - 172.31.0.107
+       - 172.31.0.108
+       - 172.31.0.109
   labels:
        cluster: cluster
        dc: dc
