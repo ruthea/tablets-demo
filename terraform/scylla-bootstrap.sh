@@ -73,7 +73,7 @@ internode_compression: all
 murmur3_partitioner_ignore_msb_bits: 12
 strict_is_not_null_in_views: true
 maintenance_socket: ignore
-enable_tablets: true
+#enable_tablets: true
 api_ui_dir: /opt/scylladb/swagger-ui/dist/
 api_doc_dir: /opt/scylladb/api/api-doc/
 compaction_enforce_min_threshold: true
@@ -119,4 +119,3 @@ case ${IP_BLOCK} in
 esac
 
 echo "ScyllaDB Started"
-
