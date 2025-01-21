@@ -308,12 +308,20 @@ resource "aws_instance" "loader_node" {
   }
 
   provisioner "file" {
+    source      = "${path.module}/${var.unique_identifier}_tablets_demo.pem"
+    destination = "/home/ubuntu/.ssh/id_rsa"
+  }
+
+  provisioner "file" {
     source      = "/tmp/source_files.tar.gz"
     destination = "/tmp/source_files.tar.gz"
   }
 
   provisioner "remote-exec" {
     inline = [
+      "chmod 700 /home/ubuntu/.ssh",
+      "chown -R ubuntu:ubuntu /home/ubuntu",
+      "chmod 600 /home/ubuntu/.ssh/id_rsa",
       "sudo mkdir -p /app/tablets-demo",
       "sudo chmod 777 /app",
       "sudo chmod 777 /app/tablets-demo",
