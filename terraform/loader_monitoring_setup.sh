@@ -31,6 +31,11 @@ chown root.root /opt/scylladb/share/cassandra/lib/scylla-driver-core-3.11.5.3-sh
 docker rm -f cs
 docker volume prune --force
 
+while [ ! -f "/app/tablets-demo/ansible/inventory.ini" ]; do
+  echo "Waiting for /app/tablets-demo/ansible/inventory.ini to be ready..."
+  sleep 5
+done
+
 mkdir -pv /loader /app
 
 # cqlsh credentials
@@ -78,7 +83,7 @@ EOF
 
 # App stuff
 cd /app
-git clone https://github.com/ruthea/tablets-demo.git
+##git clone https://github.com/ruthea/tablets-demo.git
 cd /app/tablets-demo
 
 # Configure Ansible inventory
