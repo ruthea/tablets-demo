@@ -165,10 +165,10 @@ data "aws_ami" "ubuntu" {
   }
 }
 
-resource "aws_instance" "scylladb_node" {
-  count         = 6
+resource "aws_instance" "scylladb_node_base" {
+  count         = var.scylla_instance_base_qty
   ami           = data.aws_ami.ubuntu.id
-  instance_type = var.scylla_instance_type
+  instance_type = var.scylla_instance_type_base
   key_name      = aws_key_pair.kp.key_name
   user_data     = file("${path.module}/scylla-bootstrap.sh")
 
@@ -192,9 +192,73 @@ resource "aws_instance" "scylladb_node" {
       }
     }
   }
+    tags = {
+    Name = "${var.unique_identifier}_scylladb-node-${count.index + 1}"
+  }
+}
+
+resource "aws_instance" "scylladb_node_scale1" {
+  count         = 3
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.scylla_instance_type_scale1
+  key_name      = aws_key_pair.kp.key_name
+  user_data     = file("${path.module}/scylla-bootstrap.sh")
+
+  private_ip = "172.31.0.10${count.index + 4}"
+
+  subnet_id              = aws_subnet.tablets_demo_subnet.id
+  vpc_security_group_ids = [aws_security_group.tablets_demo_sg.id]
+  placement_group        = aws_placement_group.tablets_demo_pg.name
+
+  root_block_device {
+    volume_size = 64 #GB
+    volume_type = "gp3"
+  }
+
+  dynamic "instance_market_options" {
+    for_each = var.use_spot_instances == "yes" ? [1] : []
+    content {
+      market_type = "spot"
+      spot_options {
+        max_price = "0.5"
+      }
+    }
+  }
+    tags = {
+    Name = "${var.unique_identifier}_scylladb-scale1-node-${count.index + 1}"
+  }
+}
+
+resource "aws_instance" "scylladb_node_scale2" {
+  count         = var.scylla_instance_scale2_qty
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = var.scylla_instance_type_scale2
+  key_name      = aws_key_pair.kp.key_name
+  user_data     = file("${path.module}/scylla-bootstrap.sh")
+
+  private_ip = "172.31.0.10${count.index + 7}"
+
+  subnet_id              = aws_subnet.tablets_demo_subnet.id
+  vpc_security_group_ids = [aws_security_group.tablets_demo_sg.id]
+  placement_group        = aws_placement_group.tablets_demo_pg.name
+
+  root_block_device {
+    volume_size = 64 #GB
+    volume_type = "gp3"
+  }
+
+  dynamic "instance_market_options" {
+    for_each = var.use_spot_instances == "yes" ? [1] : []
+    content {
+      market_type = "spot"
+      spot_options {
+        max_price = "0.5"
+      }
+    }
+  }
 
   tags = {
-    Name = "${var.unique_identifier}_scylladb-node-${count.index + 1}"
+    Name = "${var.unique_identifier}_scylladb-scale2-node-${count.index + 1}"
   }
 }
 
@@ -236,16 +300,26 @@ resource "aws_instance" "loader_node" {
     private_key = tls_private_key.tablets_demo.private_key_pem
   }
 
+  # Archive and upload files, excluding 'secrets.txt'
+  provisioner "local-exec" {
+    command = <<EOT
+      tar --exclude='secrets.txt' -czf /tmp/source_files.tar.gz -C "${path.module}/.." .
+    EOT
+  }
+
   provisioner "file" {
-    source      = "${path.module}/${var.unique_identifier}_tablets_demo.pem"
-    destination = "/home/ubuntu/.ssh/id_rsa"
+    source      = "/tmp/source_files.tar.gz"
+    destination = "/tmp/source_files.tar.gz"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod 700 /home/ubuntu/.ssh",
-      "chown -R ubuntu:ubuntu /home/ubuntu",
-      "chmod 600 /home/ubuntu/.ssh/id_rsa"
+      "sudo mkdir -p /app/tablets-demo",
+      "sudo chmod 777 /app",
+      "sudo chmod 777 /app/tablets-demo",
+      "sudo chmod 777 /tmp/source_files.tar.gz",
+      "tar -xzf /tmp/source_files.tar.gz -C /app/tablets-demo",
+      "rm /tmp/source_files.tar.gz"  # Cleanup after extraction
     ]
   }
 }
