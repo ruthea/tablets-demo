@@ -141,7 +141,7 @@ def handle_stop_loader():
 
 @socketio.on("batch_loader")
 def handle_batch_command():
-    loader_cmd = ["/bin/bash", "-c", "nohup ./batch_write.sh " + args.seed_node]
+    loader_cmd = ["/bin/bash", "-c", "./background_job.sh " + args.seed_node]
     process = subprocess.Popen(loader_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, cwd=scripts_path)
 
     for line in process.stdout:
